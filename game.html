@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+canvas {
+    border:3px solid #c01010;
+    background-color: #4fbbea;
+}
+</style>
+</head>
+<body onload="startGame()">
+<script>
+
+var myGamePiece;
+var myObstacles = [];
+var myScore;
+
+function startGame() {
+    myGamePiece = new component(30, 20, "red", 10, 120);
+    myGamePiece.gravity = 0.1;
+    myScore = new component("30px", "Consolas", "black", 280, 40, "text");
+    myGameArea.start();
+}
+
+var myGameArea = {
+    canvas : document.createElement("canvas"),
+    start : function() {
+        this.canvas.width = 700;
+        this.canvas.height = 500;
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.frameNo = 0;
+        this.interval = setInterval(updateGameArea, 20);
+        },
+    clear : function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+}
+
+function component(width, height, color, x, y, type) {
+    this.type = type;
+    this.score = 0;
+    this.width = width;
+    this.height = height;
+    this.speedX = 0;
+    this.speedY = 0;    
+    this.x = x;
+    this.y = y;
+    this.gravity = 0;
+    this.gravitySpeed = 0;
+    this.update = function() {
+        ctx = myGameArea.context;
+        if (this.type == "text") {
+            ctx.font = this.width + " " + this.height;
+            ctx.fillStyle = color;
+            ctx.fillText(this.text, this.x, this.y);
+        } else {
+            ctx.fillStyle = color;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
+    }
+    this.newPos = function() {
+        this.gravitySpeed += this.gravity;
+        this.x += this.speedX;
+        this.y += this.speedY + this.gravitySpeed;
+        this.hitBottom();
+    }
+    this.hitBottom = function() {
+        var rockbottom = myGameArea.canvas.height - this.height;
+        if (this.y > rockbottom) {
+            this.y = rockbottom;
+            this.gravitySpeed = 0;
+        }
+    }
+    this.crashWith = function(otherobj) {
+        var myleft = this.x;
+        var myright = this.x + (this.width);
+        var mytop = this.y;
+        var mybottom = this.y + (this.height);
+        var otherleft = otherobj.x;
+        var otherright = otherobj.x + (otherobj.width);
+        var othertop = otherobj.y;
+        var otherbottom = otherobj.y + (otherobj.height);
+        var crash = true;
+        if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
+            crash = false;
+        }
+        return crash;
+    }
+}
+
+function updateGameArea() {
+    var x, height, gap, minHeight, maxHeight, minGap, maxGap;
+    for (i = 0; i < myObstacles.length; i += 1) {
+        if (myGamePiece.crashWith(myObstacles[i])) {
+            return;
+        } 
+    }
+    myGameArea.clear();
+    myGameArea.frameNo += 1;
+    if (myGameArea.frameNo == 1 || everyinterval(150)) {
+        x = myGameArea.canvas.width;
+        minHeight = 20;
+        maxHeight = 200;
+        height = Math.floor(Math.random()*(maxHeight-minHeight+1)+minHeight);
+        minGap = 50;
+        maxGap = 200;
+        gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
+        myObstacles.push(new component(10, height, "green", x, 0));
+        myObstacles.push(new component(10, x - height - gap, "green", x, height + gap));
+    }
+    for (i = 0; i < myObstacles.length; i += 1) {
+        myObstacles[i].x += -1;
+        myObstacles[i].update();
+    }
+    myScore.text="SCORE: " + myGameArea.frameNo;
+    myScore.update();
+    myGamePiece.newPos();
+    myGamePiece.update();
+}
+
+function everyinterval(n) {
+    if ((myGameArea.frameNo / n) % 1 == 0) {return true;}
+    return false;
+}
+
+function accelerate(n) {
+    myGamePiece.gravity = n;
+}
+</script>
+<br>
+<button onmousedown="accelerate(-0.2)" onmouseup="accelerate(0.05)">ACCELERATE</button>
+<p>Use the ACCELERATE button to stay in the air</p>
+<p>How long can you stay alive?</p>
+,<h2> <u> <b> &#129300 getting bore ...&#129300 then let's play a game &#128526</b></u>
+<h2> <b> <u>&#9962life in england &#9962 </u></b></h2>
+
+<p style="font-size:x-large ;"> Ramanujan departed from Madras aboard the S.S. Nevasa on 17 March 1914.[91][92] When he disembarked in London on 14 April, Neville was waiting for him with a car. Four days later, Neville took him to his house on Chesterton Road in Cambridge. Ramanujan immediately began his work with Littlewood and Hardy. After six weeks, Ramanujan moved out of Neville's house and took up residence on Whewell's Court, a five-minute walk from Hardy's room.[93]
+
+
+    Ramanujan's "Master Theorem" page
+    Hardy and Littlewood began to look at Ramanujan's notebooks. Hardy had already received 120 theorems from Ramanujan in the first two letters, but there were many more results and theorems in the notebooks. Hardy saw that some were wrong, others had already been discovered, and the rest were new breakthroughs.[94] Ramanujan left a deep impression on Hardy and Littlewood. Littlewood commented, "I can believe that he's at least a Jacobi",[95] while Hardy said he "can compare him only with Euler or Jacobi."[96]
+    
+    Ramanujan spent nearly five years in Cambridge collaborating with Hardy and Littlewood, and published part of his findings there. Hardy and Ramanujan had highly contrasting personalities. Their collaboration was a clash of different cultures, beliefs, and working styles. In the previous few decades, the foundations of mathematics had come into question and the need for mathematically rigorous proofs was recognised. Hardy was an atheist and an apostle of proof and mathematical rigour, whereas Ramanujan was a deeply religious man who relied very strongly on his intuition and insights. Hardy tried his best to fill the gaps in Ramanujan's education and to mentor him in the need for formal proofs to support his results, without hindering his inspiration—a conflict that neither found easy.
+    
+    Ramanujan was awarded a Bachelor of Arts by Research degree[97][98] (the predecessor of the PhD degree) in March 1916 for his work on highly composite numbers, sections of the first part of which had been published the preceding year in the Proceedings of the London Mathematical Society. The paper was more than 50 pages long and proved various properties of such numbers. Hardy disliked this topic area but remarked that though it engaged with what he called the 'backwater of mathematics', in it Ramanujan displayed 'extraordinary mastery over the algebra of inequalities'.[99]
+    
+    On 6 December 1917, Ramanujan was elected to the London Mathematical Society. On 2 May 1918, he was elected a Fellow of the Royal Society,[100] the second Indian admitted, after Ardaseer Cursetjee in 1841. At age 31, Ramanujan was one of the youngest Fellows in the Royal Society's history. He was elected "for his investigation in elliptic functions and the Theory of Numbers." On 13 October 1918, he was the first Indian to be elected a Fellow of Trinity College, Cambridge.</p>
+<a href="file:///C:/Users/Samaydhara/adulthood.html"> <b> <u> previous</u></b></a>
+</body>
+</html>
